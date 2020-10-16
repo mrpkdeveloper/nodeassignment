@@ -13,12 +13,42 @@ const tasks = db.define("task", {
   },
 });
 
+const user = db.define("userinfo", {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  firstname: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  lastname: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  username: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+});
+
 //test
-db.sync()
-  .then(() => console.log("database synced successfully"))
-  .catch((err) => console.error("error in creating database"));
+// db.sync()
+//   .then(() => console.log("database synced successfully"))
+//   .catch((err) => console.error("error in creating database"));
 
 module.exports = {
   db,
   tasks,
+  user,
 };

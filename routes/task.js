@@ -1,48 +1,72 @@
-// const { findById } = require('../controllers/user')
-const user = require("../schema/models").tasks;
+const {
+  findById,
+  findAllTasks,
+  AddNewTask,
+  updatetask,
+  deletetask,
+} = require("../controllers/tasks");
+const task = require("../schema/models").tasks;
 const route = require("express").Router();
 
+//create new task
 route.post("/", (req, res) => {
-  user
-    .create({
-      name: req.body.name,
-      email: req.body.email,
-    })
-    .then((user) => {
-      res.status(201).send(user);
+  const task = AddNewTask(req.body.task)
+    .then((task) => {
+      res.status(201).send(task);
     })
     .catch((err) => {
       console.log(err);
       res.status(201).send(err);
-      // res.status(501).send({ error: "product not added to cart" })
+      // res.status(501).send({ error: "task not added" })
     });
 });
 
-route.get("/", (req, res) => {
-  //get all users
-  user
-    .findAll()
-    .then((user) => {
-      res.status(200).send(user);
+//read all task
+route.get("/", async (req, res) => {
+  //get all tasks
+  console.log("find all task");
+  await findAllTasks()
+    .then((tasks) => {
+      res.status(200).send(tasks);
     })
     .catch((err) => {
-      res.status(500).send({ error: "could not able to find user" });
+      res.status(500).send({ error: "could not able to find tasks" });
     });
 });
 
-route.get("/:email", async (req, res) => {
-  await user
-    .findAll({
-      // include: [Users]
-      where: {
-        email: req.params.email,
-      }, //We can only do this because of the relation we've provided before
-    })
-    .then((user) => {
-      res.status(200).send(user);
+//read specific task by id
+route.get("/:id", async (req, res) => {
+  const task = await findById(req.params.id)
+    .then((task) => {
+      res.status(200).send(task);
     })
     .catch((err) => {
-      res.status(500).send({ error: "could not able to find user" });
+      res.status(500).send({ error: "could not able to find task" });
     });
 });
+
+//update task
+route.post("/:id/:task", (req, res) => {
+  const task = updatetask(req.params.id, req.params.task)
+    .then((task) => {
+      res.status(201).send(task);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(201).send(err);
+    });
+});
+
+//delete task
+route.post("/:id", (req, res) => {
+  const task = deletetask(req.params.id)
+    .then((task) => {
+      res.status(201).send(task);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(201).send(err);
+    });
+});
+
 exports = module.exports = route;
